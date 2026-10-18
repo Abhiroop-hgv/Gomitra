@@ -10,7 +10,7 @@ from gomitra import config
 from gomitra.context import store
 from gomitra.core.util import now
 from gomitra.domain import trends
-from gomitra.services import alerts, ingest
+from gomitra.services import alerts, ingest, notify
 from gomitra.services.cows import all_cows
 
 DEMO_COWS = [("gauri", "Gauri", "0417", "Holstein-Friesian", "5 years"), ("nandini", "Nandini", "0388", "Holstein-Friesian cross", "6 years"),
@@ -57,7 +57,7 @@ def reset(keep_cows=False):
     """Back to a clean demo: removes all alerts, observations, sound events, sightings and device logs, clears every cow's
     alert and history, deletes cows that are not demo cows (unless keep_cows), then reloads the demo cows and the simulated
     week. The vet documents are not touched."""
-    for col in ("observations", "alerts", "audio_events", "posture_log", "ingest_log", "meta"):
+    for col in ("observations", "alerts", "audio_events", "posture_log", "ingest_log", "notifications", "meta"):
         store.delete_many(col, [d["id"] for d in store.list(col)])
     removed = 0
     for c in all_cows():
@@ -131,10 +131,11 @@ def build_history():
     store.put_many("audio_events", chew)
     alerts.clear_cache()
     out = {"posture_sightings": len(posture), "chew_clips": len(chew), "cows": {}}
-    for cid in HISTORY_REST:
-        if store.get("cows", cid):
-            tr = alerts.check_cow(cid)
-            out["cows"][cid] = {k: tr[k] for k in ("today", "base", "flag")}
-    out["eating"] = alerts.check_eating(HISTORY_CAMERA)
+    with notify.muted():
+        for cid in HISTORY_REST:
+            if store.get("cows", cid):
+                tr = alerts.check_cow(cid)
+                out["cows"][cid] = {k: tr[k] for k in ("today", "base", "flag")}
+        out["eating"] = alerts.check_eating(HISTORY_CAMERA)
     store.put("meta", "demo_history", {"ts": now()})
     return out

@@ -87,3 +87,18 @@ def test_reset_can_keep_the_cows_that_were_added(client, admin, seeded):
     store.put("cows", "visitor-0999", {"name": "Visitor", "tag": "0999", "alert": False, "history": [], "last_seen": 1.0})
     assert client.post("/api/demo/reset", params={"keep_cows": "true"}, headers=admin).json()["cows_removed"] == 0
     assert client.get("/api/cows/visitor-0999").status_code == 200
+
+
+def test_notify_settings_need_the_admin_key_and_hide_the_number(client, admin):
+    body = {"phone": "+919876543210", "lang": "hi"}
+    assert client.put("/api/notify/settings", json=body).status_code == 403
+    r = client.put("/api/notify/settings", json=body, headers=admin).json()
+    assert r["enabled"] and r["lang"] == "hi" and "98765" not in r["phone"]
+    assert "98765" not in client.get("/api/notify/settings").text
+    assert client.put("/api/notify/settings", json={"phone": "12345"}, headers=admin).status_code == 400
+
+
+def test_rebuilding_the_demo_week_does_not_text_the_farmer(client, admin, seeded):
+    client.put("/api/notify/settings", json={"phone": "+919876543210"}, headers=admin)
+    client.post("/api/demo/history", headers=admin)
+    assert client.get("/api/notifications").json() == []

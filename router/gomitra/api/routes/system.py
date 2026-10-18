@@ -2,7 +2,9 @@
 from fastapi import APIRouter, Depends
 
 from gomitra.api.deps import require_admin
-from gomitra.services import alerts, demo, system
+from gomitra.api.schemas import NotifySettings
+from gomitra.errors import BadRequest
+from gomitra.services import alerts, demo, notify, system
 
 router = APIRouter(tags=["system"])
 
@@ -56,3 +58,21 @@ def history():
 @router.post("/api/demo/reset", dependencies=[Depends(require_admin)])
 def reset(keep_cows: bool = False):
     return demo.reset(keep_cows)
+
+
+@router.get("/api/notify/settings")
+def notify_settings():
+    return notify.public_settings()
+
+
+@router.put("/api/notify/settings", dependencies=[Depends(require_admin)])
+def set_notify_settings(n: NotifySettings):
+    try:
+        return notify.set_settings(n.phone, n.lang, n.enabled, n.min_severity)
+    except ValueError as e:
+        raise BadRequest(str(e))
+
+
+@router.get("/api/notifications")
+def notifications():
+    return notify.recent()

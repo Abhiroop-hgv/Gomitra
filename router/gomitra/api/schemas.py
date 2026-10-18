@@ -24,6 +24,13 @@ class AudioIn(BaseModel):
     immediate: bool = False         # demo clips: alert from one clip instead of waiting for agreement
 
 
+class NotifySettings(BaseModel):
+    phone: str                      # international form, +919876543210
+    lang: str = "en"                # language of the SMS: en / hi / te
+    enabled: bool = True
+    min_severity: str = "medium"    # "high" = only urgent alerts
+
+
 class Posture(BaseModel):
     images: list[str]               # 1 to 5 pictures of the same cow (frames of a short walking clip, or a photo)
     cow_id: str | None = None

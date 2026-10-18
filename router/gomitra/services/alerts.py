@@ -10,7 +10,7 @@ import uuid
 from gomitra.context import kb, store
 from gomitra.core.util import data_url, now
 from gomitra.domain import suspects, trends
-from gomitra.services import messages
+from gomitra.services import messages, notify
 from gomitra.services.cows import all_cows, get_cow
 
 TREND_QUERY = {"rest": "cow lying down more than usual and not eating what to do",
@@ -56,6 +56,7 @@ def check_rest(cid):
         msg, source = trend_message("rest", c["name"])
         store.update("cows", cid, {"alert": True, "kind": "rest", "severity": "medium", "short": messages.SHORT["rest"],
                                    "msg": msg, "source": source, "last_seen": now(), "box": None})
+        notify.send("rest", c["name"], "medium", msg)
     return tr
 
 
@@ -71,6 +72,7 @@ def check_down(cid):
                 msg[lang]["text"] = (msg[lang]["text"] + " " + suspects.ALSO_CHEWING[lang]).strip()
         store.update("cows", cid, {"alert": True, "kind": "down", "severity": "high", "short": messages.SHORT["down"],
                                    "msg": msg, "source": source, "last_seen": now(), "box": None})
+        notify.send("down", c["name"], "high", msg)
     return st
 
 
@@ -94,6 +96,7 @@ def check_eating(camera):
             alert = {"kind": "eating", "camera": camera, "ts": now(), "severity": "medium",
                      "msg": msg, "source": source, "short": messages.SHORT["eating"], "resolved": False}
             store.put("alerts", uuid.uuid4().hex, attach_suspects(alert, camera))
+            notify.send("eating", camera, "medium", alert["msg"])
     _eat_cache[camera] = (now(), tr)
     return tr
 

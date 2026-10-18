@@ -7,6 +7,7 @@ from gomitra.core.util import now, read_image
 from gomitra.domain import rules
 from gomitra.errors import UpstreamError
 from gomitra.services import messages
+from gomitra.services import notify
 from gomitra.services.alerts import attach_suspects
 
 
@@ -30,6 +31,7 @@ def process_audio(audio, camera="Camera 1", immediate=False):
         alert = {"kind": "distress", "camera": camera, "ts": ts, "severity": "medium", "msg": msg, "source": source,
                  "short": messages.SHORT["distress"], "resolved": False}
         store.put("alerts", uuid.uuid4().hex, attach_suspects(alert, camera))
+        notify.send("distress", camera, "medium", alert["msg"])
     return {"audio": res, "finding": finding, "alert": alert, "trace": trace.get(),
             "note": "One clip is not enough: distress alerts need two matching clips in 30 minutes."
             if finding and not alert else None}

@@ -15,7 +15,7 @@ router/
     infra/                  store.py (Memory | Firestore), inference.py (Vertex | Cloud Run | local)
     domain/                 rules.py, trends.py, suspects.py, agent.py, matching.py   (pure logic)
     services/               cows, analysis, audio, posture, ingest, alerts, assistant, system, demo,
-                            messages, kb, gait, report   (use-cases)
+                            messages, kb, gait, report, notify   (use-cases)
     api/                    app.py (create_app, guard, error mapping), deps.py, schemas.py, routes/*
   tests/unit, tests/api     pytest
 ```
@@ -60,6 +60,7 @@ a cow is named if score >= 0.35 and ahead of the next by >= 0.15, otherwise "cou
 | Checks | `POST /api/analyze`, `/api/audio`, `/api/posture` |
 | Devices | `POST /api/ingest` (device key), `GET /api/ingest/recent` |
 | Assistant | `POST /api/ask`, `GET /api/kb`, `POST/DELETE /api/admin/kb` (admin) |
+| Notify | `GET /api/notify/settings`, `PUT` (admin), `GET /api/notifications` |
 | System | `GET /api/alerts`, `/feeding`, `/sounds`, `/status`, `/health`, `POST /api/warmup`, `/api/alerts/{id}/resolve` |
 | Demo (admin) | `POST /api/demo/seed`, `/history`, `/reset` |
 

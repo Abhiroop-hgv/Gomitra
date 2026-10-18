@@ -8,6 +8,7 @@ from gomitra.domain import trends
 from gomitra.errors import BadRequest
 from gomitra.infra import inference as inf
 from gomitra.services import gait, messages
+from gomitra.services import notify
 from gomitra.services.alerts import check_cow, raise_alert
 from gomitra.services.cows import get_cow, public
 
@@ -47,6 +48,7 @@ def _save_for_cow(cow_id, camera, jpegs, res, score):
             upd["scene"] = res["overlay"]
         store.update("cows", cow_id, upd)
         res["alert"], res["message"] = True, upd.get("msg") or c.get("msg")
+        notify.send("limp", c["name"], finding["severity"], res["message"])
     label = (res.get("posture") or {}).get("label")
     if label in LABELS or score is not None:                      # keep a sighting for the habit trends
         store.put("posture_log", uuid.uuid4().hex, {"cow_id": cow_id, "ts": now(), "label": label if label in LABELS else None,

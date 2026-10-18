@@ -63,6 +63,10 @@ sequenceDiagram
 **Sound alert.** Clip -> call-type and eating-sound models -> distress alert (or chewing far below usual) -> the router ranks the
 cows of that camera group by recent inactivity -> the alert ends with "check this cow first" or says it could not tell.
 
+**SMS alert.** A new alert (skin, limp, rest, down, group chewing, distress) -> `notify.send` -> one SMS to the farmer's number in the
+chosen language through an SMS provider (Google Cloud has no general SMS service; Twilio here, keys in environment or Secret Manager).
+Repeats of the same alert are skipped for 6 hours, a daily cap applies, a failure never blocks the alert, and every attempt is logged.
+
 **Ask GoMitra.** Question -> embedding -> similarity search over stored document pieces (in the router) -> Gemini answers only from
 those pieces, names sources, or says it does not know.
 

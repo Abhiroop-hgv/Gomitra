@@ -14,6 +14,7 @@ from gomitra.domain import matching, rules
 from gomitra.errors import UpstreamError
 from gomitra.infra import inference as inf
 from gomitra.services import messages
+from gomitra.services import notify
 from gomitra.services.alerts import raise_alert
 from gomitra.services.cows import all_cows, get_cow, public
 
@@ -82,6 +83,7 @@ def _record(cow_doc, it, finding, cctv, scene, camera, mode, res):
         upd = raise_alert(cow_doc, finding, scene, it["box"], camera)
         store.update("cows", cid, upd)
         res["alert"], res["message"] = True, upd.get("msg") or cow_doc.get("msg")
+        notify.send(kind, cow_doc["name"], finding["severity"], res["message"])
     elif not finding:
         store.update("cows", cid, {"scene": data_url(scene), "last_seen": now(),
                                    "signals": dict(cow_doc.get("signals") or {}, skin="ok")})
