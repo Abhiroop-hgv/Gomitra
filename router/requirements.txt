@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+numpy
+opencv-python-headless
+requests
+google-auth
+google-cloud-firestore
+google-genai
+pypdf
