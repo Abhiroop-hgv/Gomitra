@@ -19,3 +19,4 @@ friend_audio/
 # one-off helpers and request samples
 frontend/patch_ui.py
 serving/vertex_req.json
+.fast2sms_key

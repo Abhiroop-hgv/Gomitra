@@ -12,7 +12,7 @@ sound clips; all AI runs in the cloud. The farmer app is a multilingual web app 
 - **Sound checks:** call type (possible distress) and eating sounds.
 - **Frame agent:** picks the good frames from a clip and routes each to the right model.
 - **Ask GoMitra:** a voice-enabled vet assistant (retrieval over vet documents) in three languages, with sources named.
-- **SMS alerts:** a text message to the farmer when a new alert is raised (Twilio; off until a phone number and provider keys are set).
+- **SMS alerts:** a text message to the farmer when a new alert is raised (Fast2SMS for India, or Twilio; off until a phone number and provider key are set).
 - **Vet report:** a one-page handover note for the vet.
 
 ## Google Cloud services
