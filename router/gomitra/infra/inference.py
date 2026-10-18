@@ -12,8 +12,7 @@ import os
 import cv2
 import numpy as np
 
-import gmtrace as trace
-
+from gomitra.core import tracing as trace
 BACKEND = os.getenv("INFER_BACKEND", "cloudrun")
 PROJECT = os.getenv("PROJECT", "cattle-id-511705")
 REGION = os.getenv("REGION", "asia-south1")

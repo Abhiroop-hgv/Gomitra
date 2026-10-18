@@ -6,9 +6,7 @@ so embeddings are saved as a list of {"v": [...]} maps (see main.py).
 import os
 import threading
 
-import gmtrace as trace
-
-
+from gomitra.core import tracing as trace
 class Memory:
     def __init__(self):
         self.d, self.lock = {}, threading.Lock()
