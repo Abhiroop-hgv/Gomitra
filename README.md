@@ -3,6 +3,8 @@
 AI cattle-health screening for farmers, built on Google Cloud. A Raspberry Pi only captures and uploads photos, short videos and
 sound clips; all AI runs in the cloud. The farmer app is a multilingual web app (English, Hindi, Telugu) that says what to do next.
 
+Canva link for ppt: https://www.canva.com/design/DAHYXV3Ja24/ZcMagn3Vrid05ZlZb635MA/edit
+
 ## What it does
 - **Skin screening** (lumpy skin disease and foot-and-mouth signs) from photos and camera frames.
 - **Cow recognition** by face, so findings are attached to the right cow.
