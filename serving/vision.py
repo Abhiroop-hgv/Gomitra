@@ -10,7 +10,7 @@ import onnxruntime as ort
 
 CLASSES = ["normal", "lumpy", "fmd"]
 COW = 19                      # COCO class id for 'cow'
-MIN_SIDE, MIN_SHARP = 80, 20.0  # same crop-quality gate as predict_video.py
+MIN_SIDE, MIN_SHARP = 80, 20.0  # same crop-quality gate as training/predict_video.py
 MEAN = np.array([0.485, 0.456, 0.406], np.float32)
 STD = np.array([0.229, 0.224, 0.225], np.float32)
 

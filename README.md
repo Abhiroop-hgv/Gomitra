@@ -28,6 +28,7 @@ Vertex AI (model endpoint, Gemini 2.5 Flash, embeddings), Cloud Run, Firestore, 
 | `deploy/` | PowerShell scripts that build and deploy to Google Cloud and switch the model backend |
 | `pi/` | Raspberry Pi uploader |
 | `kb_docs/` | Starter vet notes and the loader for licensed source documents |
+| `training/` | Model training and evaluation scripts (not part of the deployed app) |
 | `docs/` | HLD, LLD, architecture and costs, test cases, jury guide |
 
 ## Deploy (Google Cloud)

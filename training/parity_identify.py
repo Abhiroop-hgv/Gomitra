@@ -1,6 +1,9 @@
-"""Compare ONNX port (serving/identify.py) with the repo's PyTorch pipeline. python parity_identify.py PHOTO_ROOT N"""
+"""Compare ONNX port (serving/identify.py) with the repo's PyTorch pipeline. python training/parity_identify.py PHOTO_ROOT N [CATTLE_DETECTION_REPO]  (repo path may also come from env CATTLE_REPO)"""
 import sys, glob, os, random
-sys.path.insert(0, r"C:\Users\Admin\cattle_repo_clone\Cattle-detection"); sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "serving"))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+repo = sys.argv[3] if len(sys.argv) > 3 else os.environ.get("CATTLE_REPO")
+if not repo: sys.exit("usage: parity_identify.py PHOTO_ROOT N [CATTLE_DETECTION_REPO] (or set CATTLE_REPO)")
+sys.path.insert(0, repo); sys.path.insert(0, os.path.join(ROOT, "serving"))
 import numpy as np, cv2
 from PIL import Image
 from cattle_id.config import Config
@@ -9,10 +12,9 @@ from cattle_id.embedder import Embedder
 from identify import Identify
 
 root, N = sys.argv[1], int(sys.argv[2])
-repo = r"C:\Users\Admin\cattle_repo_clone\Cattle-detection"
 cfg = Config(face_detector_weights=os.path.join(repo, "checkpoints", "face_tag_detector.pt"), checkpoint=os.path.join(repo, "checkpoints", "face_embedder.pt"))
 det, emb = FaceTagDetector(cfg), Embedder(cfg, device="cpu")
-mine = Identify(os.path.join(os.path.dirname(os.path.abspath(__file__)), "serving", "models"))
+mine = Identify(os.path.join(ROOT, "serving", "models"))
 random.seed(3); files = []
 for f in os.listdir(root): files += random.sample(sorted(glob.glob(os.path.join(root, f, "*.*"))), min(N, 400))
 def iou(a, b):
