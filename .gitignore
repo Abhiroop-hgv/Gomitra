@@ -20,3 +20,5 @@ friend_audio/
 frontend/patch_ui.py
 serving/vertex_req.json
 .fast2sms_key
+node_modules/
+.venv/

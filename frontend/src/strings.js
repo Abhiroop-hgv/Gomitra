@@ -154,3 +154,5 @@ const T_EXTRA = {
     report_plain: 'సేవ్ చేసిన వివరాల సాధారణ సారాంశం.', report_share: 'WhatsAppలో పంపండి', report_copy: 'టెక్స్ట్ కాపీ చేయండి', report_copied: 'కాపీ అయింది' }
 };
 for (const l in T_EXTRA) Object.assign(T[l], T_EXTRA[l]);
+
+export default T;
