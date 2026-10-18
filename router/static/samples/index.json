@@ -1,0 +1,96 @@
+{
+ "photos": [
+  {
+   "file": "normal_1.jpg",
+   "label": {
+    "en": "Healthy cow",
+    "hi": "स्वस्थ गाय",
+    "te": "ఆరోగ్యకరమైన ఆవు"
+   }
+  },
+  {
+   "file": "lumpy_1.jpg",
+   "label": {
+    "en": "Lumpy skin",
+    "hi": "लंपी स्किन",
+    "te": "లంపీ స్కిన్"
+   }
+  },
+  {
+   "file": "fmd_1.jpg",
+   "label": {
+    "en": "Mouth and foot disease",
+    "hi": "मुंह-खुर रोग",
+    "te": "నోరు-కాళ్ల వ్యాధి"
+   }
+  },
+  {
+   "file": "normal_2.jpg",
+   "label": {
+    "en": "Healthy cow",
+    "hi": "स्वस्थ गाय",
+    "te": "ఆరోగ్యకరమైన ఆవు"
+   }
+  },
+  {
+   "file": "lumpy_2.jpg",
+   "label": {
+    "en": "Lumpy skin",
+    "hi": "लंपी स्किन",
+    "te": "లంపీ స్కిన్"
+   }
+  },
+  {
+   "file": "fmd_2.jpg",
+   "label": {
+    "en": "Mouth and foot disease",
+    "hi": "मुंह-खुर रोग",
+    "te": "నోరు-కాళ్ల వ్యాధి"
+   }
+  }
+ ],
+ "sounds": [
+  {
+   "file": "sound_distress.wav",
+   "label": {
+    "en": "Loud call (distress example)",
+    "hi": "तेज़ आवाज़ (तकलीफ का उदाहरण)",
+    "te": "పెద్ద అరుపు (బాధ ఉదాహరణ)"
+   }
+  },
+  {
+   "file": "sound_calm.wav",
+   "label": {
+    "en": "Calm call",
+    "hi": "शांत आवाज़",
+    "te": "ప్రశాంత శబ్దం"
+   }
+  }
+ ],
+ "walk": [
+  {
+   "file": "walk_lame.jpg",
+   "label": {
+    "en": "Mild limp (photo)",
+    "hi": "हल्का लंगड़ापन (फोटो)",
+    "te": "తేలికపాటి కుంటితనం (ఫోటో)"
+   }
+  },
+  {
+   "file": "walk_sahiwal.jpg",
+   "label": {
+    "en": "Cows resting",
+    "hi": "आराम करती गायें",
+    "te": "విశ్రాంతి తీసుకుంటున్న ఆవులు"
+   }
+  },
+  {
+   "file": "walk_tharparkar.jpg",
+   "label": {
+    "en": "Tharparkar cow",
+    "hi": "थारपारकर गाय",
+    "te": "థార్పార్కర్ ఆవు"
+   }
+  }
+ ]
+}
