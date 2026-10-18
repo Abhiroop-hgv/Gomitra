@@ -59,6 +59,4 @@ this project and need review by a veterinarian. See `docs/` for details.
 ## Design
 See docs/HLD.md (components, flows, quality attributes) and docs/LLD.md (layers, patterns, algorithms, tests).
 
-## Credits
-The sound models and the best-frame selection approach come from the open-source CattlePlus project (https://github.com/shashi007-hub/livestock-monitoring) and its teammates' repositories. Models and datasets keep their own licences.
 
