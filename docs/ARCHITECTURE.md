@@ -19,7 +19,7 @@ flowchart LR
 | Piece | Where | Notes |
 |---|---|---|
 | Web app and API | Cloud Run `gomitra` (Mumbai) | One service. Serves the app and `/api/*`. Scales to zero. |
-| Models | **Vertex AI endpoint** `cattle-endpoint` (model `cattle-serving-v4`, n1-standard-2, Mumbai) | Live. The same container is also on Cloud Run `cattle-serving` (scales to zero) as a fallback: `switch_backend.ps1 cloudrun` switches the app to it. Chosen by the `INFER_BACKEND` setting. Stateless. |
+| Models | **Vertex AI endpoint** `cattle-endpoint` (model `cattle-serving-v4`, n1-standard-2, Mumbai) | Live. The same container is also on Cloud Run `cattle-serving` (scales to zero) as a fallback: `deploy/switch_backend.ps1 cloudrun` switches the app to it. Chosen by the `INFER_BACKEND` setting. Stateless. |
 | Pose and posture | Cloud Run `gomitra-pose` (4 CPU, 8 GB) | DeepLabCut SuperAnimal-Quadruped, weights baked into the image. About 17 seconds per request on CPU. Private; the router calls it with a service identity. |
 | Walking score | Gemini on Vertex AI | Sprecher 1 to 5 scale, with a trust gate: no score if the picture is not clear. Falls back to pictures only if the pose service is down. |
 | Data | Firestore (Mumbai) | `cows`, `observations`, `alerts`, `audio_events`, `kb_chunks` |
@@ -42,7 +42,7 @@ Each upload, what the agent decided and why is logged (last 50) and shown on the
 4. If it alerts, the router searches the vet notes and asks Gemini for a short message and three steps in English, Hindi and Telugu, citing the note. The cow's record in Firestore is updated.
 
 ## Switching between Vertex AI and Cloud Run
-`switch_backend.ps1 vertex <endpoint id>` or `switch_backend.ps1 cloudrun`. The app does not change.
+`deploy/switch_backend.ps1 vertex <endpoint id>` or `deploy/switch_backend.ps1 cloudrun`. The app does not change.
 
 ## Showing that it is real: "Behind this result"
 Every request carries a measured trace (module `router/gomitra/core/tracing.py`): each call to the Vertex AI endpoint, Gemini, the embeddings, the pose service and Firestore is timed where it happens, and the app shows the list under every result. Nothing in it is typed by hand; a failed or fallback step says so.

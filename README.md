@@ -24,13 +24,14 @@ Vertex AI (model endpoint, Gemini 2.5 Flash, embeddings), Cloud Run, Firestore, 
 | `router/` | FastAPI service in layers (`gomitra/api`, `services`, `domain`, `infra`, `core`), tests, and the built web app |
 | `pose/` | Pose service (DeepLabCut SuperAnimal-Quadruped) and activity rules |
 | `frontend/` | Web app source; `build.py` assembles `router/static/index.html` |
+| `deploy/` | PowerShell scripts that build and deploy to Google Cloud and switch the model backend |
 | `pi/` | Raspberry Pi uploader |
 | `kb_docs/` | Starter vet notes and the loader for licensed source documents |
 | `docs/` | HLD, LLD, architecture and costs, test cases, jury guide |
 
 ## Deploy (Google Cloud)
-Set `GOMITRA_GCLOUD` to your `gcloud` executable if it is not on `PATH`, then run `deploy_backend.ps1` (service account, model service,
-router), or `deploy_serving.ps1`, `deploy_pose.ps1`, `deploy_router.ps1` one by one. `switch_backend.ps1` points the router at a Vertex AI
+Set `GOMITRA_GCLOUD` to your `gcloud` executable if it is not on `PATH`, then run `deploy/deploy_backend.ps1` (service account, model service,
+router), or `deploy/deploy_serving.ps1`, `deploy_pose.ps1`, `deploy_router.ps1` one by one. `deploy/switch_backend.ps1` points the router at a Vertex AI
 endpoint or the Cloud Run model service.
 
 ## Tests

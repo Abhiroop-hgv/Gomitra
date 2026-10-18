@@ -1,3 +1,4 @@
+$repo = Split-Path $PSScriptRoot -Parent
 # Deploys the GoMitra backend: service account + roles, router image, model container (Cloud Run), router (Cloud Run).
 # Run from the folder that contains router\ and serving\.  Re-running is safe.
 $ErrorActionPreference = "Continue"
@@ -15,7 +16,7 @@ foreach ($role in "roles/datastore.user", "roles/aiplatform.user") {
 }
 
 "== build router image $tag"
-& $g builds submit "$PSScriptRoot\router" --tag "$img/router:$tag" --project=$p --region=$r --quiet
+& $g builds submit "$repo\router" --tag "$img/router:$tag" --project=$p --region=$r --quiet
 
 "== model container on Cloud Run (private)"
 & $g run deploy cattle-serving --image "$img/serving:v3" --region=$r --project=$p --port=8080 --memory=4Gi --cpu=2 `
@@ -25,7 +26,7 @@ $serving = (& $g run services describe cattle-serving --region=$r --project=$p -
 & $g run services add-iam-policy-binding cattle-serving --region=$r --project=$p --member="serviceAccount:$sa" --role=roles/run.invoker --quiet | Out-Null
 
 "== router on Cloud Run (public)"
-$keyFile = "$PSScriptRoot\.admin_key"
+$keyFile = "$repo\.admin_key"
 if (-not (Test-Path $keyFile)) { -join ((1..24) | ForEach-Object { '{0:x}' -f (Get-Random -Max 16) }) | Set-Content $keyFile }
 $key = (Get-Content $keyFile).Trim()
 & $g run deploy gomitra --image "$img/router:$tag" --region=$r --project=$p --service-account=$sa --allow-unauthenticated `

@@ -1,3 +1,4 @@
+$repo = Split-Path $PSScriptRoot -Parent
 # Builds the model container and (re)deploys it to Cloud Run, then points the router at it.
 # usage: deploy_serving.ps1 v4
 if ($env:GOMITRA_GCLOUD_CONFIG) { $env:CLOUDSDK_CONFIG = $env:GOMITRA_GCLOUD_CONFIG }
@@ -7,7 +8,7 @@ $p = "cattle-id-511705"; $r = "asia-south1"; $img = "$r-docker.pkg.dev/$p/cattle
 $sa = "gomitra-router@$p.iam.gserviceaccount.com"
 $tag = $args[0]
 "== build serving $tag"
-& $g builds submit "$PSScriptRoot\serving" --tag "$img/serving:$tag" --project=$p --region=$r --quiet
+& $g builds submit "$repo\serving" --tag "$img/serving:$tag" --project=$p --region=$r --quiet
 "== deploy serving $tag"
 & $g run deploy cattle-serving --image "$img/serving:$tag" --region=$r --project=$p --port=8080 --memory=4Gi --cpu=2 `
   --no-cpu-throttling --min-instances=1 --max-instances=2 --timeout=300 --no-allow-unauthenticated --quiet
