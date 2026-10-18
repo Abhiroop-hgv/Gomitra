@@ -56,7 +56,7 @@ Every request carries a measured trace (module `router/gomitra/core/tracing.py`)
 
 ## Keeping the demo fresh
 - The simulated week of habit data (Tulasi resting more, group chewing down, Nandini's rising walking score) is rebuilt automatically when someone opens the app and it is more than 8 hours old. Turn off with the setting `AUTO_DEMO=0`.
-- `POST /api/demo/reset` (admin key) returns the demo to a clean state: clears alerts, history, sound events and device logs, removes cows added during testing (add `?keep_cows=true` to keep them), reloads the 12 demo cows and the simulated week. Vet documents are kept.
+- `POST /api/demo/reset` (admin key) returns the demo to a clean state: clears alerts, history, sound events and device logs, removes cows added during testing (add `?keep_cows=true` to keep them), reloads the 6 demo cows and the simulated week. Vet documents are kept.
 
 ## Cost notes
 Cloud Run router and Firestore: close to nothing when idle. Model container: kept at one running instance for the demo (a few rupees per hour). Pose service: scales to zero; keeping one instance warm costs roughly 35 rupees per hour, so only do it during the demo. Vertex AI endpoint: about 10 rupees per hour while deployed. Undeploy it after the demo.

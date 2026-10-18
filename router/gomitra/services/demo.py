@@ -1,4 +1,4 @@
-"""Demo data: 12 demo cows and a SIMULATED week of habit data so the trend alerts can be shown.
+"""Demo data: 6 demo cows and a SIMULATED week of habit data so the trend alerts can be shown.
 
 The rules that raise the alerts are real; the history is made up. Because the trend windows are the 24-hour blocks before "now",
 the simulated week is rebuilt when the app opens and it is more than 90 minutes old (`ensure_history`).
@@ -15,10 +15,7 @@ from gomitra.services.cows import all_cows
 
 DEMO_COWS = [("gauri", "Gauri", "0417", "Holstein-Friesian", "5 years"), ("nandini", "Nandini", "0388", "Holstein-Friesian cross", "6 years"),
              ("rani", "Rani", "0451", "Holstein-Friesian cross", "4 years"), ("kamala", "Kamala", "0452", "Holstein-Friesian", "6 years"),
-             ("lakshmi", "Lakshmi", "0412", "Holstein-Friesian", "4 years"), ("radha", "Radha", "0405", "Holstein-Friesian cross", "6 years"),
-             ("ganga", "Ganga", "0431", "Holstein-Friesian cross", "3 years"), ("yamuna", "Yamuna", "0426", "Holstein-Friesian", "5 years"),
-             ("tulasi", "Tulasi", "0439", "Holstein-Friesian cross", "4 years"), ("saraswati", "Saraswati", "0398", "Holstein-Friesian", "7 years"),
-             ("kavya", "Kavya", "0444", "Holstein-Friesian cross", "2 years"), ("sita", "Sita", "0409", "Holstein-Friesian cross", "5 years")]
+             ("lakshmi", "Lakshmi", "0412", "Holstein-Friesian", "4 years"), ("tulasi", "Tulasi", "0439", "Holstein-Friesian cross", "4 years")]
 HISTORY_CAMERA = "North field camera"
 # resting sightings out of 12 per day: (usual day, last 24 h). Tulasi rests far more than her usual; the others do not.
 HISTORY_REST = {"tulasi": (5, 9), "kamala": (5, 5), "lakshmi": (5, 6), "nandini": (5, 5)}

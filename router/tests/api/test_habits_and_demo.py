@@ -77,7 +77,7 @@ def test_reset_returns_the_demo_to_a_clean_state(client, admin, seeded):
     r = client.post("/api/demo/reset", headers=admin).json()
     assert r["cows_removed"] == 1 and client.get("/api/cows/visitor-0999").status_code == 404
     g = client.get("/api/cows/gauri").json()
-    assert not g["alert"] and g["signals"] == {} and store.list("observations") == [] and len(client.get("/api/cows").json()) == 12
+    assert not g["alert"] and g["signals"] == {} and store.list("observations") == [] and len(client.get("/api/cows").json()) == 6
     assert client.get("/api/cows/tulasi").json()["alert"] and r["history"]["eating"]["flag"]          # ready to show again
     assert len([a for a in client.get("/api/alerts").json() if a["kind"] == "eating"]) == 1
 

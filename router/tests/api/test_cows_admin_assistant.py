@@ -37,11 +37,11 @@ def test_the_device_route_needs_the_device_key(client, device):
 
 
 # ---- cows
-def test_seed_adds_the_twelve_demo_cows_once(client, admin):
-    assert client.post("/api/demo/seed", headers=admin).json() == {"added": 12}
+def test_seed_adds_the_six_demo_cows_once(client, admin):
+    assert client.post("/api/demo/seed", headers=admin).json() == {"added": 6}
     assert client.post("/api/demo/seed", headers=admin).json() == {"added": 0}
     cows = client.get("/api/cows").json()
-    assert len(cows) == 12 and all("embeddings" not in c and "history" not in c for c in cows)       # never sent to the app
+    assert len(cows) == 6 and all("embeddings" not in c and "history" not in c for c in cows)       # never sent to the app
 
 
 def test_unknown_cow_is_404_everywhere(client):

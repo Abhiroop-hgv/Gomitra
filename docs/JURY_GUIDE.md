@@ -22,7 +22,7 @@ More detailed cases with expected results: `TEST_CASES.md`. How it is built on G
 | Real, running on Google Cloud | Simulated or sample, and labelled as such |
 |---|---|
 | Skin, cow-face, pose and sound models on Vertex AI and Cloud Run | The week of habit history for Tulasi, Kamala, Lakshmi and Nandini (resting, chewing, walking scores), loaded so the trends can be shown |
-| Gemini 2.5 Flash: alerts, answers, walking score, vet report | The 12 demo cows (names, ear tags) |
+| Gemini 2.5 Flash: alerts, answers, walking score, vet report | The 6 demo cows (names, ear tags) |
 | Vet-note search with Vertex AI embeddings, in Telugu, Hindi and English | The vet notes are short starter notes, not published veterinary documents |
 | Firestore: cows, alerts, history | There is no live CCTV: the Raspberry Pi uploader is shown by replaying recorded footage through the same upload route |
 | The upload route used by the Raspberry Pi (`/api/ingest`) and its routing | |
