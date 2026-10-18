@@ -70,7 +70,7 @@ export default function Lab({ lab, setLab, samples, cows, onBack }) {
 
   const samplePhoto = async (file) => { patch({ imgName: file, result: null }); const img = await urlToDataURL('/static/samples/' + file, 1280); patch({ img }); };
   const sampleWalk = async (file) => { patch({ walkName: file, result: null, note: '' }); const f = await urlToDataURL('/static/samples/' + file, 960); patch({ frames: [f] }); };
-  const sampleSound = async (file) => { patch({ sndName: file, result: null }); const snd = bufToB64(await (await fetch('/static/samples/' + file)).arrayBuffer()); patch({ snd }); };
+  const sampleSound = async (file) => { patch({ sndName: file, sndUrl: '/static/samples/' + file, sndAuto: true, result: null }); const snd = bufToB64(await (await fetch('/static/samples/' + file)).arrayBuffer()); patch({ snd }); };
 
   const onPhoto = async (f) => { if (!f) return; patch({ imgName: f.name, result: null }); patch({ img: await fileToDataURL(f, 1280) }); };
   const onWalk = async (fl) => {
@@ -83,7 +83,7 @@ export default function Lab({ lab, setLab, samples, cows, onBack }) {
       patch({ frames, note: '' });
     } catch (e) { patch({ frames: [], note: t('err') }); }
   };
-  const onSound = async (f) => { if (!f) return; patch({ sndName: f.name, result: null }); patch({ snd: bufToB64(await f.arrayBuffer()) }); };
+  const onSound = async (f) => { if (!f) return; patch({ sndName: f.name, sndUrl: URL.createObjectURL(f), sndAuto: false, result: null }); patch({ snd: bufToB64(await f.arrayBuffer()) }); };
 
   const run = async () => {
     patch({ busy: true, result: null });
@@ -118,7 +118,8 @@ export default function Lab({ lab, setLab, samples, cows, onBack }) {
       <h2 className="sec display">{t('samples')}</h2>
       <div className="samps">{S.sounds.map((s) => <button key={s.file} type="button" className={'samp wide' + (l.sndName === s.file ? ' on' : '')} onClick={() => sampleSound(s.file)}><span>🔊 {lm(s.label)}</span></button>)}</div>
       <label className="upl" htmlFor="lab-snd">{t('upload_sound')}<input id="lab-snd" type="file" accept="audio/*" style={hidden} onChange={(e) => onSound(e.target.files[0])} /></label>
-      {l.sndName ? <p className="fine">🔊 {l.sndName}</p> : null}</>;
+      {l.sndName ? <p className="fine">🔊 {l.sndName}</p> : null}
+      {l.sndUrl ? <audio key={l.sndUrl} controls autoPlay={!!l.sndAuto} src={l.sndUrl} style={{ width: '100%', maxWidth: 420, marginTop: 8 }} /> : null}</>;
   }
   const ready = l.tab === 'photo' ? !!l.img : l.tab === 'walk' ? l.frames.length > 0 : !!l.snd;
   const res = l.result ? (l.tab === 'photo' ? <PhotoResult r={l.result} /> : l.tab === 'walk' ? <WalkResult r={l.result} /> : <SoundResult r={l.result} />) : null;
