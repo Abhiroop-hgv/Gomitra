@@ -8,6 +8,7 @@ shown on the app's system screen / `GET /api/notifications`.
 Safety: never raises (a failed SMS must not break an alert), skips repeats of the same alert for 6 hours, and stops at a daily cap.
 """
 import base64
+import json
 import logging
 import os
 import urllib.parse
@@ -19,10 +20,14 @@ from gomitra.context import store
 from gomitra.core.util import now
 from gomitra.services import messages
 
-PROVIDER = os.getenv("SMS_PROVIDER", "log")             # "twilio" or "log"
+PROVIDER = os.getenv("SMS_PROVIDER", "log")             # "fast2sms", "twilio" or "log"
 TWILIO_SID = os.getenv("TWILIO_SID", "")
 TWILIO_TOKEN = os.getenv("TWILIO_TOKEN", "")
 TWILIO_FROM = os.getenv("TWILIO_FROM", "")
+FAST2SMS_KEY = os.getenv("FAST2SMS_KEY", "")
+FAST2SMS_ROUTE = os.getenv("FAST2SMS_ROUTE", "q")       # "q" = quick route (no DLT template, dearer); "dlt" needs FAST2SMS_SENDER and FAST2SMS_TEMPLATE
+FAST2SMS_SENDER = os.getenv("FAST2SMS_SENDER", "")
+FAST2SMS_TEMPLATE = os.getenv("FAST2SMS_TEMPLATE", "")
 REPEAT_SECONDS = 6 * 3600       # the same alert on the same cow/camera is not sent again within this time
 DAILY_CAP = 20                  # SMS per 24 h, so a bad day cannot run up a bill
 MAX_CHARS = 300
@@ -64,7 +69,15 @@ def mask(phone):
 
 def public_settings():
     s = get_settings()
-    return dict(s, phone=mask(s["phone"]), provider=PROVIDER, ready=PROVIDER == "log" or bool(TWILIO_SID and TWILIO_TOKEN and TWILIO_FROM))
+    return dict(s, phone=mask(s["phone"]), provider=PROVIDER, ready=PROVIDER == "log" or _configured())
+
+
+def _configured():
+    if PROVIDER == "twilio":
+        return bool(TWILIO_SID and TWILIO_TOKEN and TWILIO_FROM)
+    if PROVIDER == "fast2sms":
+        return bool(FAST2SMS_KEY) and (FAST2SMS_ROUTE != "dlt" or bool(FAST2SMS_SENDER and FAST2SMS_TEMPLATE))
+    return False
 
 
 def build_text(kind, subject, msg, lang):
@@ -80,6 +93,21 @@ def _send_twilio(to, text):
     req.add_header("Authorization", "Basic " + base64.b64encode(("%s:%s" % (TWILIO_SID, TWILIO_TOKEN)).encode()).decode())
     with urllib.request.urlopen(req, timeout=10) as r:
         return r.status in (200, 201)
+
+
+def _send_fast2sms(to, text):
+    """Fast2SMS bulkV2 (Indian numbers only). `to` is +91XXXXXXXXXX; the API wants the 10 digits."""
+    digits = "".join(ch for ch in to if ch.isdigit())
+    if not (digits.startswith("91") and len(digits) == 12):
+        raise ValueError("Fast2SMS sends to Indian numbers (+91...)")
+    fields = {"route": FAST2SMS_ROUTE, "numbers": digits[2:], "message": text, "flash": "0"}
+    if FAST2SMS_ROUTE == "dlt":
+        fields.update({"sender_id": FAST2SMS_SENDER, "message": FAST2SMS_TEMPLATE, "variables_values": text})
+    req = urllib.request.Request("https://www.fast2sms.com/dev/bulkV2", data=urllib.parse.urlencode(fields).encode())
+    req.add_header("authorization", FAST2SMS_KEY)
+    with urllib.request.urlopen(req, timeout=10) as r:
+        body = json.loads(r.read().decode() or "{}")
+        return r.status == 200 and body.get("return") is True
 
 
 def send(kind, subject, severity, msg):
@@ -98,9 +126,10 @@ def send(kind, subject, severity, msg):
                "to": mask(s["phone"]), "channel": PROVIDER, "text": build_text(kind, subject, msg, s["lang"])}
         if sum(1 for n in recent if n.get("status") == "sent") >= DAILY_CAP:
             rec["status"] = "skipped: daily limit"
-        elif PROVIDER == "twilio" and TWILIO_SID and TWILIO_TOKEN and TWILIO_FROM:
+        elif PROVIDER in ("twilio", "fast2sms") and _configured():
             try:
-                rec["status"] = "sent" if _send_twilio(s["phone"], rec["text"]) else "failed"
+                fn = _send_twilio if PROVIDER == "twilio" else _send_fast2sms
+                rec["status"] = "sent" if fn(s["phone"], rec["text"]) else "failed"
             except Exception as e:
                 logging.getLogger("gomitra").warning("sms failed: %s", e)
                 rec["status"] = "failed"

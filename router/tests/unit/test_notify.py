@@ -75,3 +75,31 @@ def test_muted_block_sends_nothing(on):
     with notify.muted():
         assert notify.send("down", "Tulasi", "high", MSG) is None
     assert store.list("notifications") == []
+
+
+def test_fast2sms_sends_the_ten_digit_number(on, monkeypatch):
+    seen = {}
+
+    class R:
+        status = 200
+        def read(self): return b'{"return": true}'
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    def fake(req, timeout=0):
+        seen["body"], seen["key"] = req.data.decode(), req.get_header("Authorization")
+        return R()
+
+    monkeypatch.setattr(notify, "PROVIDER", "fast2sms")
+    monkeypatch.setattr(notify, "FAST2SMS_KEY", "k123")
+    monkeypatch.setattr(notify.urllib.request, "urlopen", fake)
+    store.put(*notify.SETTINGS, {"phone": "+919876543210", "lang": "en", "enabled": True, "min_severity": "medium"})
+    rec = notify.send("rest", "Tulasi", "medium", {"en": {"title": "x", "advice": "y"}})
+    assert rec["status"] == "sent"
+    assert "numbers=9876543210" in seen["body"] and "route=q" in seen["body"] and seen["key"] == "k123"
+
+
+def test_fast2sms_refuses_non_indian_numbers(monkeypatch):
+    monkeypatch.setattr(notify, "FAST2SMS_KEY", "k")
+    with pytest.raises(ValueError):
+        notify._send_fast2sms("+14155550100", "hi")
