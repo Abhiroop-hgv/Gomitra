@@ -1,0 +1,21 @@
+# secrets: never commit these
+.admin_key
+.device_key
+*.key
+
+# other publishers' documents: downloaded by kb_docs/load_real_sources.py, not redistributed here
+kb_docs/real_sources/*.pdf
+
+# local scratch
+__pycache__/
+*.pyc
+b64.txt
+loader*.txt
+
+# the teammate's repository copy and audio (use their own repo instead)
+friend_repo/
+friend_audio/
+
+# one-off helpers and request samples
+frontend/patch_ui.py
+serving/vertex_req.json
