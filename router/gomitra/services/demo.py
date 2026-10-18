@@ -3,26 +3,26 @@
 The rules that raise the alerts are real; the history is made up. Because the trend windows are the 24-hour blocks before "now",
 the simulated week is rebuilt when the app opens and it is more than 90 minutes old (`ensure_history`).
 """
+import os
 import random
 import uuid
 
 from gomitra import config
 from gomitra.context import store
-from gomitra.core.util import now
+from gomitra.core.util import data_url, now
 from gomitra.domain import trends
-from gomitra.services import alerts, ingest, notify
+from gomitra.services import alerts, ingest, messages, notify
 from gomitra.services.cows import all_cows
 
-DEMO_COWS = [("gauri", "Gauri", "0417", "Holstein-Friesian", "5 years"), ("nandini", "Nandini", "0388", "Holstein-Friesian cross", "6 years"),
-             ("rani", "Rani", "0451", "Holstein-Friesian cross", "4 years"), ("kamala", "Kamala", "0452", "Holstein-Friesian", "6 years"),
-             ("lakshmi", "Lakshmi", "0412", "Holstein-Friesian", "4 years"), ("radha", "Radha", "0405", "Holstein-Friesian cross", "6 years"),
-             ("ganga", "Ganga", "0431", "Holstein-Friesian cross", "3 years"), ("yamuna", "Yamuna", "0426", "Holstein-Friesian", "5 years"),
-             ("tulasi", "Tulasi", "0439", "Holstein-Friesian cross", "4 years"), ("saraswati", "Saraswati", "0398", "Holstein-Friesian", "7 years"),
-             ("kavya", "Kavya", "0444", "Holstein-Friesian cross", "2 years"), ("sita", "Sita", "0409", "Holstein-Friesian cross", "5 years")]
+DEMO_COWS = [("rani", "Rani", "0451", "Gir cross", "4 years"), ("tulasi", "Tulasi", "0439", "Holstein-Friesian", "5 years"),
+             ("kamala", "Kamala", "0452", "Gir cross", "6 years"), ("ganga", "Ganga", "0431", "Nandi cross", "7 years"),
+             ("gauri", "Gauri", "0417", "Sahiwal cross", "1 year"), ("lakshmi", "Lakshmi", "0412", "Gir cross", "1 year")]
 HISTORY_CAMERA = "North field camera"
+BARN_CAMERA = "Barn camera"                       # Rani is on her own camera, so a sound alert there can name her
+LUMPY_BOX = [0.02, 0.02, 0.99, 0.98]              # the box the skin model draws on the demo photo (samples/lumpy_demo.jpg)
 # resting sightings out of 12 per day: (usual day, last 24 h). Tulasi rests far more than her usual; the others do not.
-HISTORY_REST = {"tulasi": (5, 9), "kamala": (5, 5), "lakshmi": (5, 6), "nandini": (5, 5)}
-HISTORY_GAIT = {"nandini": [1, 1, 1, 2, 2]}        # oldest first, one score per day over the last 5 days
+HISTORY_REST = {"tulasi": (5, 9), "kamala": (5, 5), "lakshmi": (5, 6), "ganga": (5, 5)}
+HISTORY_GAIT = {"ganga": [1, 1, 1, 2, 2]}          # oldest first, one score per day over the last 5 days
 HISTORY_REFRESH = 90 * 60                          # rebuild when older than this ("down for hours" needs a sighting from the last 3 hours)
 _hist_check = {"at": 0.0}
 
@@ -137,5 +137,43 @@ def build_history():
                 tr = alerts.check_cow(cid)
                 out["cows"][cid] = {k: tr[k] for k in ("today", "base", "flag")}
         out["eating"] = alerts.check_eating(HISTORY_CAMERA)
+    with notify.muted():
+        out["scenarios"] = _scenarios(t0)
     store.put("meta", "demo_history", {"ts": now()})
     return out
+
+
+def _scenarios(t0):
+    """The two stories the demo tells besides Tulasi: Rani's group hears a loud distress call, and Kamala has lumpy skin.
+    The alert rules and messages are the real ones; the sound clips and Kamala's photo are the demo inputs."""
+    done = []
+    if store.get("cows", "rani"):
+        for a in store.list_where("alerts", "kind", "distress"):
+            if a.get("demo"):
+                store.delete("alerts", a["id"])
+        store.update("cows", "rani", {"camera": BARN_CAMERA})
+        store.put_many("posture_log", [(uuid.uuid4().hex, {"cow_id": "rani", "ts": t0 - 60 - i * 3600, "label": "lying", "gait": None,
+                                                          "demo": True}) for i in range(6)])
+        store.put_many("audio_events", [(uuid.uuid4().hex, {"camera": BARN_CAMERA, "ts": t0 - k * 40, "usable": True, "distress": True,
+                                                            "p_hfc": 0.97, "chew": None, "demo": True}) for k in (1, 0)])
+        msg, source = messages.compose("distress", BARN_CAMERA, [], "medium", 0.97)
+        alert = {"kind": "distress", "camera": BARN_CAMERA, "ts": t0, "severity": "medium", "msg": msg, "source": source,
+                 "short": messages.SHORT["distress"], "resolved": False, "demo": True}
+        alerts.attach_suspects(alert, BARN_CAMERA)
+        store.put("alerts", uuid.uuid4().hex, alert)
+        store.update("cows", "rani", {"alert": True, "kind": "distress", "severity": "medium", "short": messages.SHORT["distress"],
+                                      "msg": alert["msg"], "source": source, "last_seen": now(), "box": None})
+        done.append("rani")
+    if store.get("cows", "kamala"):
+        with open(os.path.join(config.STATIC_DIR, "samples", "lumpy_demo.jpg"), "rb") as f:
+            jpeg = f.read()
+        finding = {"kind": "lumpy", "p": 0.988, "severity": "high"}
+        try:
+            upd = alerts.raise_alert(store.get("cows", "kamala") | {"id": "kamala"}, finding, jpeg, LUMPY_BOX, HISTORY_CAMERA)
+        except Exception:                                    # no vet-document search available: use the template wording
+            upd = {"alert": True, "kind": "lumpy", "severity": "high", "camera": HISTORY_CAMERA, "box": LUMPY_BOX, "scene": data_url(jpeg),
+                   "last_seen": now(), "short": messages.SHORT["lumpy"], "signals": {"skin": "check"}}
+            upd["msg"], upd["source"] = messages.compose("lumpy", "Kamala", [], "high", 0.988, use_gemini=False)
+        store.update("cows", "kamala", upd)
+        done.append("kamala")
+    return done

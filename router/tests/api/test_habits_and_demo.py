@@ -13,13 +13,13 @@ def test_trends_endpoint(client, seeded):
     tr = client.get("/api/cows/tulasi/trends").json()
     assert tr["rest"]["flag"] and tr["streak"]["hours"] >= 4 and tr["streak"]["fresh"]
     assert not client.get("/api/cows/kamala/trends").json()["rest"]["flag"]
-    assert client.get("/api/cows/nandini/trends").json()["gait"]["flag"]                        # 1, 1, 1, 2, 2 is rising
+    assert client.get("/api/cows/ganga/trends").json()["gait"]["flag"]                        # 1, 1, 1, 2, 2 is rising
 
 
 def test_group_chewing_and_the_cow_to_check_first(client, seeded):
     s = client.get("/api/sounds", params={"camera": "North field camera"}).json()
     assert s["trend"]["flag"] and s["meals"] >= 2
-    assert "Tulasi" in s["check_first"]["en"] and s["check_first_stands_out"] is True
+    assert "Rani" in s["check_first"]["en"] and s["check_first_stands_out"] is True          # the barn distress call comes first
     alerts = [a for a in client.get("/api/alerts").json() if a["kind"] == "eating"]
     assert len(alerts) == 1 and alerts[0]["suspects"][0]["name"] == "Tulasi"
     assert alerts[0]["msg"]["te"]["advice"].endswith(alerts[0]["check_first"]["te"])
@@ -77,7 +77,7 @@ def test_reset_returns_the_demo_to_a_clean_state(client, admin, seeded):
     r = client.post("/api/demo/reset", headers=admin).json()
     assert r["cows_removed"] == 1 and client.get("/api/cows/visitor-0999").status_code == 404
     g = client.get("/api/cows/gauri").json()
-    assert not g["alert"] and g["signals"] == {} and store.list("observations") == [] and len(client.get("/api/cows").json()) == 12
+    assert not g["alert"] and g["signals"] == {} and store.list("observations") == [] and len(client.get("/api/cows").json()) == 6
     assert client.get("/api/cows/tulasi").json()["alert"] and r["history"]["eating"]["flag"]          # ready to show again
     assert len([a for a in client.get("/api/alerts").json() if a["kind"] == "eating"]) == 1
 

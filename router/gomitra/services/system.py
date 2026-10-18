@@ -26,12 +26,12 @@ def feeding(camera="Camera 1"):
 def sounds(camera="North field camera"):
     """What the microphone group heard today: chewing time and meals, the latest distress call, and which cow to check first."""
     f = feeding(camera)
-    ev = [e for e in store.list_where("audio_events", "camera", camera) if e.get("distress")]
+    ev = [e for e in store.list("audio_events") if e.get("distress")]                 # a distress call on any of the farm's cameras
     last = max((e["ts"] for e in ev), default=None)
     tr = alerts.check_eating(camera)
     open_ = [a for k in ("distress", "eating") for a in store.list_where("alerts", "kind", k)
-             if a.get("camera") == camera and not a.get("resolved") and a.get("check_first") and now() - a["ts"] < 43200]
-    latest = max(open_, key=lambda a: a["ts"], default=None)
+             if (a.get("camera") == camera or k == "distress") and not a.get("resolved") and a.get("check_first") and now() - a["ts"] < 43200]
+    latest = max(open_, key=lambda a: (a["kind"] == "distress", a["ts"]), default=None)      # a distress call comes first
     return dict(f, last_distress=last, distress_clips=len(ev), trend=tr,
                 check_first=(latest or {}).get("check_first"), check_first_stands_out=(latest or {}).get("stands_out"))
 

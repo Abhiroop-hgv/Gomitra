@@ -39,7 +39,7 @@ def test_a_lumpy_photo_raises_an_alert_on_the_chosen_cow(client, admin):
 
 def test_a_foot_and_mouth_photo_is_high_severity(client, admin):
     client.post("/api/demo/seed", headers=admin)
-    x = client.post("/api/analyze", json={"image": sample_b64("fmd_1.jpg"), "mode": "photo", "cow_id": "nandini"}).json()["results"][0]
+    x = client.post("/api/analyze", json={"image": sample_b64("fmd_1.jpg"), "mode": "photo", "cow_id": "ganga"}).json()["results"][0]
     assert x["finding"]["kind"] == "fmd" and x["finding"]["severity"] == "high"
 
 

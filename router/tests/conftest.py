@@ -61,7 +61,7 @@ def device():
 
 @pytest.fixture
 def seeded(client, admin):
-    """The 12 demo cows plus the simulated week of habit data (Tulasi down for hours, group chewing low)."""
+    """The 6 demo cows plus the simulated week of habit data (Tulasi down for hours, group chewing low)."""
     client.post("/api/demo/seed", headers=admin)
     return client.post("/api/demo/history", headers=admin).json()
 
