@@ -31,6 +31,18 @@ Vertex AI (model endpoint, Gemini 2.5 Flash, embeddings), Cloud Run, Firestore, 
 | `training/` | Model training and evaluation scripts (not part of the deployed app) |
 | `docs/` | HLD, LLD, architecture and costs, test cases, jury guide |
 
+## Farmer sign-in
+Farmers sign in with a username and password that we create for them (no self sign-up). The server checks the password (stored as a salted
+PBKDF2 hash in the `users` collection) and returns a signed token that the app sends with every call.
+
+| Setting | What it does |
+|---|---|
+| `AUTH_REQUIRED=1` | the API needs a signed-in farmer (the admin key and the Raspberry Pi device key still work). Default off. |
+| `AUTH_SECRET` | long random string that signs the tokens; required in production so every instance accepts the same tokens |
+| `FARMER_USER`, `FARMER_PASS`, `FARMER_NAME` | optional: this account is created at start-up if it does not exist (never overwritten) |
+
+More accounts: `POST /api/users` with the admin key and `{"username","password","name"}`.
+
 ## Deploy (Google Cloud)
 Set `GOMITRA_GCLOUD` to your `gcloud` executable if it is not on `PATH`, then run `deploy/deploy_backend.ps1` (service account, model service,
 router), or `deploy/deploy_serving.ps1`, `deploy_pose.ps1`, `deploy_router.ps1` one by one. `deploy/switch_backend.ps1` points the router at a Vertex AI

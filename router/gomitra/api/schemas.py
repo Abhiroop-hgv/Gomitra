@@ -24,6 +24,18 @@ class AudioIn(BaseModel):
     immediate: bool = False         # demo clips: alert from one clip instead of waiting for agreement
 
 
+class Credentials(BaseModel):
+    username: str
+    password: str
+
+
+class NewUser(BaseModel):
+    username: str
+    password: str
+    name: str = ""
+    phone: str = ""
+
+
 class NotifySettings(BaseModel):
     phone: str                      # international form, +919876543210
     lang: str = "en"                # language of the SMS: en / hi / te

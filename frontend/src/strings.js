@@ -1,7 +1,7 @@
 const T = {
   en: {
-    signin: 'Sign in', signin_sub: 'Enter your mobile number and password to see your herd.', tagline: 'Know how every cow is doing today.',
-    mobile: 'Mobile number', password: 'Password', forgot: 'Forgot password?', demo_hint: 'Demo: just tap Sign in.',
+    signin: 'Sign in', signin_sub: 'Enter the username and password we gave you to see your herd.', tagline: 'Know how every cow is doing today.',
+    mobile: 'Username', password: 'Password', forgot: 'Forgot password?', demo_hint: 'Ask us if you forgot your password.', signing_in: 'Signing in…', login_failed: 'Could not sign in. Check your internet and try again.', session_over: 'Please sign in again.',
     good_morning: 'Good morning', cows: 'cows', add_cow: 'Add cow', lab: 'Test lab', ask: 'Ask GoMitra',
     all: 'All', attention: 'Needs attention', healthy: 'Healthy', n_need1: '1 cow needs attention', n_need: '{n} cows need attention',
     tap_only: 'Tap to show only these cows.', seen: 'Seen', just_now: 'just now', min_ago: '{n} min ago', h_ago: '{n} h ago', d_ago: '{n} d ago',
@@ -32,8 +32,8 @@ const T = {
     err: 'Something went wrong. Please try again.', no_voice: 'I did not hear anything. Tap the mic and speak again.', mic_blocked: 'Microphone is blocked. Allow the microphone for this site in your browser settings.', loading: 'Loading…', ask_chips: ['My cow has lumps on her skin. What should I do?', 'How does lumpy skin disease spread?', 'When should I call the vet?']
   },
   hi: {
-    signin: 'साइन इन करें', signin_sub: 'अपना मोबाइल नंबर और पासवर्ड डालकर अपने पशु देखें।', tagline: 'आज हर गाय कैसी है, जानें।',
-    mobile: 'मोबाइल नंबर', password: 'पासवर्ड', forgot: 'पासवर्ड भूल गए?', demo_hint: 'डेमो: बस साइन इन दबाएं।',
+    signin: 'साइन इन करें', signin_sub: 'हमारे दिए यूज़रनेम और पासवर्ड से अपने पशु देखें।', tagline: 'आज हर गाय कैसी है, जानें।',
+    mobile: 'यूज़रनेम', password: 'पासवर्ड', forgot: 'पासवर्ड भूल गए?', demo_hint: 'पासवर्ड भूल गए तो हमसे पूछें।', signing_in: 'साइन इन हो रहा है…', login_failed: 'साइन इन नहीं हो सका। इंटरनेट देखकर फिर कोशिश करें।', session_over: 'कृपया फिर से साइन इन करें।',
     good_morning: 'सुप्रभात', cows: 'गायें', add_cow: 'गाय जोड़ें', lab: 'जांच केंद्र', ask: 'गोमित्र से पूछें',
     all: 'सभी', attention: 'ध्यान दें', healthy: 'स्वस्थ', n_need1: '1 गाय को ध्यान चाहिए', n_need: '{n} गायों को ध्यान चाहिए',
     tap_only: 'केवल इन्हें देखने के लिए दबाएं।', seen: 'देखा गया', just_now: 'अभी', min_ago: '{n} मिनट पहले', h_ago: '{n} घंटे पहले', d_ago: '{n} दिन पहले',
@@ -64,8 +64,8 @@ const T = {
     err: 'कुछ गड़बड़ हुई। कृपया फिर कोशिश करें।', no_voice: 'कुछ सुनाई नहीं दिया। माइक दबाकर फिर बोलें।', mic_blocked: 'माइक बंद है। अपने ब्राउज़र की सेटिंग में इस साइट के लिए माइक की अनुमति दें।', loading: 'लोड हो रहा है…', ask_chips: ['मेरी गाय की त्वचा पर गांठें हैं। मैं क्या करूं?', 'लंपी स्किन रोग कैसे फैलता है?', 'पशु चिकित्सक को कब बुलाना चाहिए?']
   },
   te: {
-    signin: 'సైన్ ఇన్', signin_sub: 'మీ మొబైల్ నంబర్, పాస్‌వర్డ్ ఇచ్చి మీ పశువులను చూడండి.', tagline: 'ఈ రోజు ప్రతి ఆవు ఎలా ఉందో తెలుసుకోండి.',
-    mobile: 'మొబైల్ నంబర్', password: 'పాస్‌వర్డ్', forgot: 'పాస్‌వర్డ్ మర్చిపోయారా?', demo_hint: 'డెమో: సైన్ ఇన్ నొక్కండి.',
+    signin: 'సైన్ ఇన్', signin_sub: 'మేము ఇచ్చిన యూజర్‌నేమ్, పాస్‌వర్డ్‌తో మీ పశువులను చూడండి.', tagline: 'ఈ రోజు ప్రతి ఆవు ఎలా ఉందో తెలుసుకోండి.',
+    mobile: 'యూజర్‌నేమ్', password: 'పాస్‌వర్డ్', forgot: 'పాస్‌వర్డ్ మర్చిపోయారా?', demo_hint: 'పాస్‌వర్డ్ మర్చిపోతే మమ్మల్ని అడగండి.', signing_in: 'సైన్ ఇన్ అవుతోంది…', login_failed: 'సైన్ ఇన్ కాలేదు. ఇంటర్నెట్ చూసి మళ్లీ ప్రయత్నించండి.', session_over: 'దయచేసి మళ్లీ సైన్ ఇన్ చేయండి.',
     good_morning: 'శుభోదయం', cows: 'ఆవులు', add_cow: 'ఆవును చేర్చు', lab: 'పరీక్ష కేంద్రం', ask: 'గోమిత్రను అడగండి',
     all: 'అన్నీ', attention: 'శ్రద్ధ అవసరం', healthy: 'ఆరోగ్యం', n_need1: '1 ఆవుకు శ్రద్ధ అవసరం', n_need: '{n} ఆవులకు శ్రద్ధ అవసరం',
     tap_only: 'వీటిని మాత్రమే చూడటానికి నొక్కండి.', seen: 'చూసింది', just_now: 'ఇప్పుడే', min_ago: '{n} నిమిషాల క్రితం', h_ago: '{n} గంటల క్రితం', d_ago: '{n} రోజుల క్రితం',

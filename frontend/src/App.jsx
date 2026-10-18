@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { LangProvider } from './i18n.jsx';
-import { api, warmUp } from './api.js';
+import { api, warmUp, getToken } from './api.js';
 import Login from './screens/Login.jsx';
 import Herd from './screens/Herd.jsx';
 import Detail from './screens/Detail.jsx';
@@ -13,7 +13,8 @@ import System from './screens/System.jsx';
 const freshAsk = (cowId = null) => ({ msgs: [], input: '', busy: false, cowId, listening: false, note: '' });
 
 function Shell() {
-  const [screen, setScreen] = useState('login');
+  const [screen, setScreen] = useState(getToken() ? 'herd' : 'login');
+  const [expired, setExpired] = useState(false);
   const [filter, setFilter] = useState('all');
   const [selectedId, setSelectedId] = useState(null);
   const [reportId, setReportId] = useState(null);
@@ -32,6 +33,13 @@ function Shell() {
   const loadCows = useCallback(async () => { try { setCows(await api('/api/cows')); } catch (e) { /* keep the last list */ } }, []);
   const loadSounds = useCallback(async () => { try { setSounds(await api('/api/sounds')); } catch (e) {} }, []);
   const loadTrend = useCallback(async (id) => { try { const d = await api('/api/cows/' + encodeURIComponent(id) + '/trends'); setTrends((s) => ({ ...s, [id]: d })); } catch (e) {} }, []);
+
+  /* the server said the sign-in is over (expired or wrong token): back to the sign-in screen */
+  useEffect(() => {
+    const out = () => { setExpired(true); setScreen('login'); };
+    window.addEventListener('gomitra-signed-out', out);
+    return () => window.removeEventListener('gomitra-signed-out', out);
+  }, []);
 
   const go = (s) => { setScreen(s); window.scrollTo(0, 0); };
 
@@ -62,7 +70,7 @@ function Shell() {
 
   let view;
   switch (screen) {
-    case 'login': view = <Login onSignIn={() => go('herd')} />; break;
+    case 'login': view = <Login expired={expired} onSignIn={() => { setExpired(false); go('herd'); }} />; break;
     case 'herd':
       view = <Herd cows={cows} sounds={sounds} filter={filter} setFilter={setFilter} go={go}
         onOpen={(id) => { setSelectedId(id); go('detail'); }}

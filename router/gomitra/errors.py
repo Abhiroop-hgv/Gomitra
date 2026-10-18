@@ -16,6 +16,10 @@ class BadRequest(AppError):
     status = 400
 
 
+class Unauthorized(AppError):
+    status = 401
+
+
 class Forbidden(AppError):
     status = 403
 
