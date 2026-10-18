@@ -1,4 +1,4 @@
-# GoMitra Raspberry Pi uploader
+﻿# GoMitra Raspberry Pi uploader
 
 The Pi only captures and uploads. All AI runs on Google Cloud. One address takes everything: `POST /api/ingest`.
 The cloud router looks at each file and decides where it goes:
@@ -10,7 +10,7 @@ The cloud router looks at each file and decides where it goes:
 | Sound clip (WAV) | distress and eating-sound models, then alert rules. |
 
 ## The frame agent in the cloud
-A single photo can be blurred, dark, or have the cow cut off. Short clips work better: the router's frame agent (`router/agent.py`,
+A single photo can be blurred, dark, or have the cow cut off. Short clips work better: the router's frame agent (`router/gomitra/domain/agent.py`,
 its checks ported from the team's `frame_extraction.py`) reads the frames, drops the blurred, dark and duplicate ones, finds the
 cow and her face, and then decides:
 - clear face -> cow-face model (who is it?);

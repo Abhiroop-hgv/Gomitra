@@ -1,4 +1,4 @@
-# GoMitra: what is built
+﻿# GoMitra: what is built
 
 ```mermaid
 flowchart LR
@@ -31,7 +31,7 @@ flowchart LR
 ## The Raspberry Pi entry point (the router's dispatcher)
 The Pi runs `pi/gomitra_pi.py`: it captures a photo and a short sound clip on a schedule and uploads each to one address, `POST /api/ingest`, with a device key. It runs no AI.
 The router looks at the first bytes of the file to see what it is and sends it on with fixed rules (no model guesses where a file goes):
-- **photo or short video: the frame agent** (`router/agent.py`, checks ported from the team's `frame_extraction.py`). A video is read at about 3 frames a second (at most 24). Cheap checks drop dark, blurred and near-duplicate frames; the cow detector and the cow-face finder look at the best 8; then each frame is routed: a clear face goes to the cow-face model (who is it?); a clearly visible cow goes to the skin model and the alert rules; a cow that is side-on, fully visible, not blocked by another cow and big enough goes to the pose model and Gemini for a walking/resting check (best 5 frames, at most every 10 minutes per cow, and the sighting is kept for the habit trends). Frames that fail every check reach no model, which saves cost and avoids false alerts.
+- **photo or short video: the frame agent** (`router/gomitra/domain/agent.py`, checks ported from the team's `frame_extraction.py`). A video is read at about 3 frames a second (at most 24). Cheap checks drop dark, blurred and near-duplicate frames; the cow detector and the cow-face finder look at the best 8; then each frame is routed: a clear face goes to the cow-face model (who is it?); a clearly visible cow goes to the skin model and the alert rules; a cow that is side-on, fully visible, not blocked by another cow and big enough goes to the pose model and Gemini for a walking/resting check (best 5 frames, at most every 10 minutes per cow, and the sighting is kept for the habit trends). Frames that fail every check reach no model, which saves cost and avoids false alerts.
 - **sound clip:** distress and eating-sound models, then alert rules.
 Each upload, what the agent decided and why is logged (last 50) and shown on the "How it works" screen. Files that cannot be read are refused. If the Pi is offline, it keeps files and sends them later.
 
@@ -45,7 +45,7 @@ Each upload, what the agent decided and why is logged (last 50) and shown on the
 `switch_backend.ps1 vertex <endpoint id>` or `switch_backend.ps1 cloudrun`. The app does not change.
 
 ## Showing that it is real: "Behind this result"
-Every request carries a measured trace (module `gmtrace.py`): each call to the Vertex AI endpoint, Gemini, the embeddings, the pose service and Firestore is timed where it happens, and the app shows the list under every result. Nothing in it is typed by hand; a failed or fallback step says so.
+Every request carries a measured trace (module `router/gomitra/core/tracing.py`): each call to the Vertex AI endpoint, Gemini, the embeddings, the pose service and Firestore is timed where it happens, and the app shows the list under every result. Nothing in it is typed by hand; a failed or fallback step says so.
 
 ## Safety and cost limits
 - **Public by design:** the app URL is open so the jury can try it. The sign-in screen is a demo screen, not real authentication. The model and pose services are private; only the router's service account can call them.

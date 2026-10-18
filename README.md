@@ -1,4 +1,4 @@
-# GoMitra
+﻿# GoMitra
 
 AI cattle-health screening for farmers, built on Google Cloud. A Raspberry Pi only captures and uploads photos, short videos and
 sound clips; all AI runs in the cloud. The farmer app is a multilingual web app (English, Hindi, Telugu) that says what to do next.
@@ -21,26 +21,33 @@ Vertex AI (model endpoint, Gemini 2.5 Flash, embeddings), Cloud Run, Firestore, 
 | Folder | What |
 |---|---|
 | `serving/` | Model container: HTTP `/predict` for Vertex AI or Cloud Run (weights tracked with Git LFS) |
-| `router/` | FastAPI service: API, alert rules, trends, frame agent, vet assistant, and the built web app |
+| `router/` | FastAPI service in layers (`gomitra/api`, `services`, `domain`, `infra`, `core`), tests, and the built web app |
 | `pose/` | Pose service (DeepLabCut SuperAnimal-Quadruped) and activity rules |
 | `frontend/` | Web app source; `build.py` assembles `router/static/index.html` |
 | `pi/` | Raspberry Pi uploader |
 | `kb_docs/` | Starter vet notes and the loader for licensed source documents |
-| `docs/` | Architecture, test cases, jury guide |
+| `docs/` | HLD, LLD, architecture and costs, test cases, jury guide |
 
 ## Deploy (Google Cloud)
 Set `GOMITRA_GCLOUD` to your `gcloud` executable if it is not on `PATH`, then run `deploy_backend.ps1` (service account, model service,
 router), or `deploy_serving.ps1`, `deploy_pose.ps1`, `deploy_router.ps1` one by one. `switch_backend.ps1` points the router at a Vertex AI
 endpoint or the Cloud Run model service.
 
-## Tests (offline)
+## Tests
 ```
 cd router
-python test_trends.py        # habit trends, suspects, vet report, rate limit, demo data
-python test_ingest.py        # Raspberry Pi route and the frame agent
+pip install -r requirements-dev.txt
+python -m pytest              # 152 tests; the 17 that run the models are skipped without serving/models
 ```
 
 ## Status and honest limits
 Screening aid, not a diagnosis. The skin model was checked on clear photos (95.9% on 614 held-out photos), not on camera footage or early
 cases. The sound models are unvalidated on farms. Habit-trend history in the demo is simulated. The starter vet notes are short notes written for
 this project and need review by a veterinarian. See `docs/` for details.
+
+## Design
+See docs/HLD.md (components, flows, quality attributes) and docs/LLD.md (layers, patterns, algorithms, tests).
+
+## Credits
+The sound models and the best-frame selection approach come from the open-source CattlePlus project (https://github.com/shashi007-hub/livestock-monitoring) and its teammates' repositories. Models and datasets keep their own licences.
+
