@@ -1,0 +1,6 @@
+{
+  "appId": "in.gomitra.app",
+  "appName": "GoMitra",
+  "webDir": "www",
+  "server": { "url": "https://gomitra-337344659283.asia-south1.run.app", "cleartext": false }
+}
