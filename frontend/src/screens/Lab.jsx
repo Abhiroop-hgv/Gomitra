@@ -45,7 +45,7 @@ function WalkResult({ r }) {
     <div className={'resbox ' + (sc >= 3 ? 'bad' : sc ? 'good' : '')}><h3 className="display">{t('result')}</h3>
       {r.overlay ? <img className="prev" src={r.overlay} alt="" /> : null}
       {sc ? <div className="srow"><div className="l"><b>{t('walk_score')}</b><span>{t('score_' + sc)}</span></div><div className={'pill' + (sc >= 3 ? ' bad' : '')}><span>{sc} / 5</span></div></div>
-        : <p>{t('no_score')}</p>}
+        : <p>{t(label === 'sitting' || label === 'lying' ? 'rest_no_score' : 'no_score')}</p>}
       {g.summary ? <p className="fine">{g.summary}</p> : null}
       {['standing', 'sitting', 'lying'].includes(label) ? <div className="srow"><div className="l"><b>{t('posture_word')}</b><span>{t('post_' + label)}</span></div></div> : null}
       {sc >= 3 && m ? <Banner m={m} /> : null}
