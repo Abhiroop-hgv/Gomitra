@@ -1,0 +1,11 @@
+{
+  "name": "gomitra-mobile",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Android wrapper (Capacitor) that opens the deployed GoMitra web app",
+  "dependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2"
+  }
+}
