@@ -1,0 +1,17 @@
+[Unit]
+Description=GoMitra Raspberry Pi uploader
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/gomitra
+Environment=GOMITRA_URL=https://gomitra-337344659283.asia-south1.run.app
+Environment=GOMITRA_KEY=PUT_THE_DEVICE_KEY_HERE
+Environment=GOMITRA_CAMERA=North field camera
+ExecStart=/usr/bin/python3 /home/pi/gomitra/gomitra_pi.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
