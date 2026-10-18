@@ -7,9 +7,8 @@ import datetime
 import json
 import logging
 
-import gmtrace as trace
-import messages
-
+from gomitra.core import tracing as trace
+from gomitra.services import messages
 IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
 KIND_WORDS = {"lumpy": "skin lumps (possible lumpy skin disease)", "fmd": "mouth/foot signs (possible foot-and-mouth disease)",
               "limp": "uneven walking (possible lameness)", "rest": "resting much more than her own usual", "down": "lying down for hours without standing",

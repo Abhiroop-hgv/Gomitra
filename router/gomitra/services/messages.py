@@ -7,8 +7,7 @@ import json
 import logging
 import os
 
-import gmtrace as trace
-
+from gomitra.core import tracing as trace
 LANGS = ("en", "hi", "te")
 PROJECT = os.getenv("PROJECT", "cattle-id-511705")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")

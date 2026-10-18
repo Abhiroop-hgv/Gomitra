@@ -8,9 +8,8 @@ import json
 import os
 import time
 
-import gmtrace as trace
-import messages
-
+from gomitra.core import tracing as trace
+from gomitra.services import messages
 POSE_URL = os.getenv("POSE_URL", "").rstrip("/")
 SCALE = """Gait / locomotion score (Sprecher 1997):
 1 = normal: level back, smooth even stride.

@@ -12,8 +12,7 @@ import re
 
 import numpy as np
 
-import gmtrace as trace
-
+from gomitra.core import tracing as trace
 PROJECT = os.getenv("PROJECT", "cattle-id-511705")
 EMBED_MODEL = os.getenv("EMBED_MODEL", "gemini-embedding-001")
 EMBED_LOCATION = os.getenv("EMBED_LOCATION", "us-central1")
