@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pydantic
+numpy<2.3
+pandas<3
+pillow
+deeplabcut==3.0.2
